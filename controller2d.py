@@ -114,6 +114,7 @@ class Controller2D(object):
             throttle_output = 0.5 * self.vars.v_previous
         """
         self.vars.create_var('v_previous', 0.0)
+        self.vars.create_var('dv_previous', 0.0)
         self.vars.create_var('accum_dv', 0.0)
         self.vars.create_var('prev_time', 0.0)
 
@@ -169,16 +170,17 @@ class Controller2D(object):
             brake_output    = 0
             dv = v_desired - v
             dt = t - self.vars.prev_time
+            dt = max(dt, 0.01)
             accum_dv = self.vars.accum_dv + dv * dt
             self.vars.accum_dv = accum_dv
-            dt = max(dt, 0.01)
             kp = 0.5
             ki = 0.5
             kd = 0.5
-            throttle_output = kp * dv + ki * accum_dv + kd * dv / dt
+            throttle_output = kp * dv + ki * accum_dv + kd * (dv - self.vars.dv_previous) / dt
             if dv < 0:
                 throttle_output = 0.0
                 brake_output = min(abs(dv), 1.0)
+            self.vars.dv_previous = dv
             self.vars.prev_time = t
 
             ######################################################
@@ -195,18 +197,21 @@ class Controller2D(object):
             steer_output    = 0
             vechile_length = 3
             kdd = 0.1
-            min_dis = 100
+            ref_dis = 6
             min_i = 0
             for i in range(len(waypoints) - 1):
                 dis = np.sqrt((waypoints[i][0] - x) ** 2 + (waypoints[i][1] - y) ** 2)
-                if dis < min_dis:
+                if dis > ref_dis:
                     min_i = i
-                    min_dis = dis
+                    break
+            if min_i == 0 and len(waypoints) > 0:
+                min_i = len(waypoints) - 1
+                
             dx = waypoints[min_i][0] - x
             dy = waypoints[min_i][1] - y
             theta = np.arctan2(dy, dx)
             alpha = theta - yaw
-            steer_output = np.atan(vechile_length * np.sin(alpha) / kdd / v)
+            steer_output = np.arctan(2 * vechile_length * np.sin(alpha) / kdd / v)
 
             ######################################################
             # SET CONTROLS OUTPUT
