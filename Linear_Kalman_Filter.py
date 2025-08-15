@@ -16,4 +16,5 @@ Pk = Fk @ P0 @ Fk.T + Qk
 K = Pk @ Hk.T @ np.linalg.inv(Hk @ Pk @ Hk.T + Rk)
 xk = xprev + K @ (y1 - Hk @ xprev)
 
+np.set_printoptions(precision=2, suppress=True)
 print(xk)
