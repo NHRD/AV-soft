@@ -1,10 +1,10 @@
 import numpy as np
 
 dt = 0.5
-Fk = np.array([[1, dt], [0, 1]]) #xは車速および加速度の2x1のため2x2で、計算結果は速度
+Fk = np.array([[1, dt], [0, 1]]) #xは位置および速度の2x1のため2x2の行列
 Gk = np.array([[0], [dt]]) #uは加速度のため2x1で、計算結果は速度
 Qk = np.array([[0.1, 0], [0, 0.1]])
-x0 = np.array([[0], [5]]) #初期は速度0、加速度5m/s^2
+x0 = np.array([[0], [5]]) #初期は位置0、加速度5m/s^2
 P0 = np.array([[0.01, 0], [0, 1]])
 u0 = np.array([[-2]]) #加速度は-2m/s^2
 Hk = np.array([[1, 0]])
