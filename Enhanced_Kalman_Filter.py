@@ -10,6 +10,6 @@ p0 = x0[0, 0]
 
 Fk = np.array([[1, dt], [0, 1]])
 Lk = np.eye(2)
-Hk = np.array([S/(D - p0)**2, 0])
-M = np.eye(2)
+Hk = np.array([[S/((D - p0)**2 + S**2), 0]])
+M = np.array([[1]])
 P = np.array([[0.01, 0], [0, 1]])
