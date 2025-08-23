@@ -18,10 +18,10 @@ p_check = x_check[0, 0]
 Hk = np.array([[S/((D - p_check)**2 + S**2), 0]])
 Mk = np.array([[1]])
 y_check = np.arctan(S / (D - p_check))   # スカラー
-y_check = y1 - y_check
+nu = y1 - y_check
 P_check = Fk @ P @ Fk.T + Lk @ Qk @ Lk.T
 Kk = P_check @ Hk.T @ np.linalg.inv(Hk @ P_check @ Hk.T + Mk @ Rk @ Mk.T)
-x_est = x_check + Kk @ (y_check - np.arctan(S / (D - p_check)))
+x_est = x_check + Kk * nu
 P_est = (np.eye(2) - Kk @ Hk) @ P_check
 
 print(x_est, P_est)
